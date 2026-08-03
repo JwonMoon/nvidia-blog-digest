@@ -41,7 +41,11 @@ def summarize(post: dict, body: str) -> str:
             )
             if result.returncode == 0 and result.stdout.strip():
                 return result.stdout.strip()
-            last_err = result.stderr.strip() or "empty output"
+            last_err = (
+                f"rc={result.returncode} "
+                f"stderr={result.stderr.strip()[:500]!r} "
+                f"stdout={result.stdout.strip()[:200]!r}"
+            )
         except subprocess.TimeoutExpired:
             last_err = "timeout"
     raise RuntimeError(f"claude summarization failed: {last_err}")
