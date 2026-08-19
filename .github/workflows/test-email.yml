@@ -1,0 +1,22 @@
+name: Test email notification
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-email:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Send test email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_APP_PASSWORD }}
+          subject: "NVIDIA Blog Digest 메일 테스트"
+          to: ${{ secrets.MAIL_USERNAME }}
+          from: NVIDIA Blog Digest
+          body: "메일 알림 설정이 정상 동작합니다. 새 요약이 생성되는 날 아침에 다이제스트가 이 주소로 발송됩니다."
