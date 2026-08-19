@@ -2,6 +2,11 @@
 
 [NVIDIA 개발자 블로그](https://developer.nvidia.com/blog)의 최신 기술 글을 매일 자동 수집해 한국어로 요약합니다.
 
+## 주간 하이라이트
+
+<!-- weekly-list -->
+- [2026-08-12 ~ 2026-08-18](weekly/2026-08-19.md)
+
 ## 날짜별 다이제스트
 
 <!-- digest-list -->
