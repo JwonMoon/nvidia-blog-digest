@@ -2,6 +2,7 @@
 """Fetch new posts from the NVIDIA developer blog RSS feed."""
 
 import json
+import os
 import pathlib
 import sys
 
@@ -14,6 +15,19 @@ USER_AGENT = (
 )
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SEEN_PATH = ROOT / "state" / "seen.json"
+
+# comma-separated substring match against post categories; empty = all posts
+CATEGORY_FILTER = [
+    c.strip().lower()
+    for c in os.environ.get("DIGEST_CATEGORIES", "").split(",")
+    if c.strip()
+]
+
+
+def matches_filter(categories: list[str]) -> bool:
+    if not CATEGORY_FILTER:
+        return True
+    return any(f in cat.lower() for cat in categories for f in CATEGORY_FILTER)
 
 
 def load_seen() -> set[str]:
@@ -33,6 +47,9 @@ def get_new_posts() -> list[dict]:
         url = entry.get("link", "")
         if not url or url in seen:
             continue
+        categories = [t["term"] for t in entry.get("tags", [])]
+        if not matches_filter(categories):
+            continue
         content = ""
         if entry.get("content"):
             content = entry["content"][0].get("value", "")
@@ -41,7 +58,7 @@ def get_new_posts() -> list[dict]:
                 "title": entry.get("title", "(untitled)"),
                 "url": url,
                 "date": entry.get("published", ""),
-                "categories": [t["term"] for t in entry.get("tags", [])],
+                "categories": categories,
                 "feed_content": content,
                 "description": entry.get("summary", ""),
             }
